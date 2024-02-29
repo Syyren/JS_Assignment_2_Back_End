@@ -21,6 +21,7 @@ const generateContactID = async (req, res, next) =>
     }
     catch (error) 
     {
+        console.error("Error handling request:", err);
         res.status(500).json({ message: error.message }); //error handling
     }
 }
@@ -43,6 +44,7 @@ async function categoryExists(req, res, next)
     } 
     catch (err) 
     {
+        console.error("Error handling request:", err);
         res.status(500).json({ message: err.message });
     }
 }
@@ -66,8 +68,7 @@ async function getContact(req, res, next)
     } 
     catch (err) 
     {
-        console.error("Error retrieving contact:", err);
-
+        console.error("Error handling request:", err);
         return res.status(500).json({ message: err.message }); //error handling
     }
     res.contact = contact;
@@ -77,9 +78,7 @@ async function getContact(req, res, next)
 //creates a contact and stores it in the database
 router.post('/add', generateContactID, categoryExists, async (req, res) => 
 {
-
     console.log("Route Handler: /add called");
-
     try 
     {
         //create the contact using the category retrieved from the middleware
@@ -93,6 +92,7 @@ router.post('/add', generateContactID, categoryExists, async (req, res) =>
     } 
     catch (err) //error handling
     {
+        console.error("Error handling request:", err);
         res.status(400).json({ message: err.message }); //error handling
     }
 });
@@ -100,9 +100,7 @@ router.post('/add', generateContactID, categoryExists, async (req, res) =>
 //views all contacts in the database
 router.get('/view/all', async (_, res) => 
 {
-
     console.log("Route Handler: /view/all called");
-
     try
     {
         const contacts = await Contact.find();
@@ -110,6 +108,7 @@ router.get('/view/all', async (_, res) =>
     }
     catch (err)
     {
+        console.error("Error handling request:", err);
         res.status(500).json({ message: err.message });
     }
 });
@@ -117,7 +116,7 @@ router.get('/view/all', async (_, res) =>
 //view a contact via its contactID
 router.get('/view/:contactID', getContact, async (_, res) => 
 {
-    console.log("Route Handler: /view/:contactID called");
+    console.log("Route Handler: /view/"+res.contact.contactID.toString()+" called");
     try 
     {
         const contact = res.contact;
@@ -134,7 +133,7 @@ router.get('/view/:contactID', getContact, async (_, res) =>
 //updates a contact via their contactID
 router.patch('/update/:contactID', getContact, categoryExists, async (req, res) => 
 {
-    console.log("Route Handler: /update/:contactID called");
+    console.log("Route Handler: /update/"+res.contact.contactID.toString()+" called");
     try
     {
         const updatedFields = req.body;
@@ -158,7 +157,7 @@ router.patch('/update/:contactID', getContact, categoryExists, async (req, res) 
 //deletes a contact from the database
 router.delete('/del/:contactID', getContact, async (_, res) => 
 {
-    console.log("Route Handler: /del/:contactID called");
+    console.log("Route Handler: /del/"+res.contact.contactID.toString()+" called");
     try 
     {
         await res.contact.remove();
