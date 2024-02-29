@@ -65,6 +65,7 @@ router.get('/view/all', async (_, res) =>
 //getting a category via its categoryID
 router.get('/view/:categoryID', async (req, res) => 
 {
+    console.log("Route Handler: /view/ called");
     try 
     {
         const category = await Category.findOne({ categoryID: req.params.categoryID.toUpperCase() });
@@ -84,6 +85,7 @@ router.get('/view/:categoryID', async (req, res) =>
 //deletes a category
 router.delete('/del/:categoryID', getCategory, async (_, res) => 
 {
+    console.log("Route Handler: /del/ called");
     try 
     {
         await res.category.remove();
