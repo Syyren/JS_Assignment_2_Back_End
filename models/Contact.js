@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const contactSchema = new mongoose.Schema({
   contactID: {
-    type: String,
+    type: Number,
     unique: true,
     required: true
   },
