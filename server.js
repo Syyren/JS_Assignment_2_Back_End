@@ -1,8 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
+
+//enabling cors for the route
+app.use(cors());
 
 //MongoDB connection
 mongoose.connect('mongodb+srv://database1:databaseuserpass@cluster0.yurnnop.mongodb.net/');
