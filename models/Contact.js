@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//creating the Schema for my contacts to store in the database
 const contactSchema = new mongoose.Schema({
   contactID: {
     type: Number,
