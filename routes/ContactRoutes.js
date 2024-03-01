@@ -155,12 +155,12 @@ router.patch('/update/:contactID', getContact, categoryExists, async (req, res) 
 });
 
 //deletes a contact from the database
-router.delete('/del/:contactID', getContact, async (_, res) => 
+router.delete('/del/:contactID', getContact, async (req, res) => 
 {
     console.log("Route Handler: /del/"+res.contact.contactID.toString()+" called");
     try 
     {
-        await res.contact.remove();
+        await Contact.deleteOne({ contactID: req.params.contactID });
         res.json({ message: 'Contact deleted' });
     }
     catch (err) 
