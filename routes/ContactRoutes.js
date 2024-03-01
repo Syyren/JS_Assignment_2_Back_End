@@ -37,7 +37,7 @@ async function categoryExists(req, res, next)
         const category = await Category.findOne({ categoryID });
         if (!category) 
         {
-            return res.status(404).json({ message: 'Category not found.' });
+            return res.status(404).json({ message: 'Category not found.' }); //returns not found error
         }
         req.category = category;
         next();
@@ -45,7 +45,7 @@ async function categoryExists(req, res, next)
     catch (err) 
     {
         console.error("Error handling request:", err);
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 }
 
@@ -63,13 +63,13 @@ async function getContact(req, res, next)
         console.log("Contact found:", contact);
         if (contact == null) 
         {
-            return res.status(404).json({ message: 'Contact not found' }); //not found error
+            return res.status(404).json({ message: 'Contact not found' }); //returns not found error
         }
     } 
     catch (err) 
     {
         console.error("Error handling request:", err);
-        return res.status(500).json({ message: err.message }); //error handling
+        return res.status(500).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
     res.contact = contact;
     next();
@@ -81,7 +81,7 @@ router.post('/add', generateContactID, categoryExists, async (req, res) =>
     console.log("Route Handler: /add called");
     try 
     {
-        //create the contact using the category retrieved from the middleware
+        //create the contact using the category retrieved from the above functions
         const contact = new Contact({
             ...req.body,
             categoryID: req.category.categoryID
@@ -90,10 +90,10 @@ router.post('/add', generateContactID, categoryExists, async (req, res) =>
         await contact.save();
         res.status(201).json(contact);
     } 
-    catch (err) //error handling
+    catch (err)
     {
         console.error("Error handling request:", err);
-        res.status(400).json({ message: err.message }); //error handling
+        res.status(400).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 });
 
@@ -104,12 +104,12 @@ router.get('/view/all', async (_, res) =>
     try
     {
         const contacts = await Contact.find();
-        res.json(contacts);
+        res.json(contacts); //returns all contacts in the db
     }
     catch (err)
     {
         console.error("Error handling request:", err);
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 });
 
@@ -121,12 +121,12 @@ router.get('/view/:contactID', getContact, async (_, res) =>
     {
         const contact = res.contact;
         console.log("Contact sent in response body:", contact);
-        res.json(contact);
+        res.json(contact); //returns the desired contact
     } 
     catch (err) 
     {
         console.error("Error handling request:", err);
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 });
 
@@ -139,18 +139,20 @@ router.patch('/update/:contactID', getContact, categoryExists, async (req, res) 
         const updatedFields = req.body;
         console.log("Updated fields:", updatedFields)
         //updates all fields sent in the request body
-        for (const key in updatedFields) {
-            if (updatedFields.hasOwnProperty(key)) {
+        for (const key in updatedFields) //logs each key being sent in the request body and updates a given field
+        {
+            if (updatedFields.hasOwnProperty(key))
+            {
                 res.contact[key] = updatedFields[key];
             }
         }
         const updatedContact = await res.contact.save();
-        res.json(updatedContact);
+        res.json(updatedContact); //updating the contact
         console.log("Updated successfully")
     }
     catch (err)
     {
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 });
 
@@ -165,7 +167,7 @@ router.delete('/del/:contactID', getContact, async (req, res) =>
     }
     catch (err) 
     {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message }); //if the handler encounters an error, returns it here
     }
 });
 
